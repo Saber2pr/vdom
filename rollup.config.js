@@ -6,7 +6,7 @@ export default {
   output: {
     file: 'build/bundle.js',
     format: 'iife',
-    name: 'test'
+    name: 'svdom'
   },
   watch: {
     include: 'lib/**'
