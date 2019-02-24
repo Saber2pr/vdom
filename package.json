@@ -1,0 +1,30 @@
+{
+  "name": "saber-vdom",
+  "version": "0.0.1",
+  "description": "saber-vdom",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Saber2pr/saber-vdom.git"
+  },
+  "author": "saber2pr",
+  "license": "ISC",
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "node ./lib/test/test.js",
+    "start": "tsc --watch",
+    "dev": "rollup -c --watch"
+  },
+  "keywords": [
+    "vdom",
+    "typescript"
+  ],
+  "devDependencies": {
+    "typescript": "^3.2.1",
+    "rollup": "^1.1.2",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-node-resolve": "^4.0.0"
+  },
+  "dependencies": {
+    "csstype": "^2.6.2"
+  }
+}
