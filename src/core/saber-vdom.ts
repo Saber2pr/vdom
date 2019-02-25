@@ -2,7 +2,7 @@
  * @Author: saber2pr
  * @Date: 2019-02-24 20:16:23
  * @Last Modified by: saber2pr
- * @Last Modified time: 2019-02-24 20:43:06
+ * @Last Modified time: 2019-02-25 17:20:04
  */
 import * as CSS from 'csstype'
 /**
@@ -93,7 +93,7 @@ export class VDom<T extends keyof HTMLElementTagNameMap> {
           default:
             throw 'type error'
         }
-        this.patchToDom(child, patches, ++depth, index)
+        this.patchToDom(child, patches, depth + 1, index)
       })
     )
   }
@@ -161,11 +161,11 @@ export class VDom<T extends keyof HTMLElementTagNameMap> {
    */
   diff(vdom: VDom<any>) {
     const patches: Patch[] = []
-    this.diffwork(vdom, patches, 0, 0)
+    this.diffStep(vdom, patches, 0, 0)
     return patches.filter(patch => patch.result.length > 0)
   }
   /**
-   * diffwork
+   * diffStep
    *
    * @private
    * @param {VDom<any>} vdom
@@ -174,7 +174,7 @@ export class VDom<T extends keyof HTMLElementTagNameMap> {
    * @param {number} index
    * @memberof VDom
    */
-  private diffwork(
+  private diffStep(
     vdom: VDom<any>,
     patches: Patch[],
     depth: number,
@@ -196,7 +196,7 @@ export class VDom<T extends keyof HTMLElementTagNameMap> {
       : patch.result.push({ type: 'props', value: this.props })
     patches.push(patch)
     this.children.forEach((child, index) =>
-      child.diffwork(vdom.children[index], patches, ++depth, index)
+      child.diffStep(vdom.children[index], patches, ++depth, index)
     )
   }
 }
