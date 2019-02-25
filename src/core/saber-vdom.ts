@@ -6,6 +6,17 @@
  */
 import * as CSS from 'csstype'
 /**
+ * Patch
+ *
+ * @export
+ * @interface Patch
+ */
+export interface Patch {
+  depth: number
+  index: number
+  result: { type: 'inner' | 'style' | 'props'; value: any }[]
+}
+/**
  * VDom
  *
  * @export
@@ -57,6 +68,17 @@ export class VDom<T extends keyof HTMLElementTagNameMap> {
    */
   private props: Partial<HTMLElementTagNameMap[T]>
   /**
+   * attr
+   *
+   * @param {Partial<HTMLElementTagNameMap[T]>} props
+   * @returns
+   * @memberof VDom
+   */
+  attr(props: Partial<HTMLElementTagNameMap[T]>) {
+    this.props = props
+    return this
+  }
+  /**
    * append
    *
    * @param {...VDom<any>[]} child
@@ -82,18 +104,54 @@ export class VDom<T extends keyof HTMLElementTagNameMap> {
     Object.keys(this.props).forEach(key => {
       dom[key] = this.props[key]
     })
-    this.children.forEach(vdom => dom.append(vdom.render()))
+    this.children.forEach(child => dom.append(child.render()))
     return dom
   }
   /**
-   * attr
+   * diff
    *
-   * @param {Partial<HTMLElementTagNameMap[T]>} props
+   * @param {VDom<any>} vdom
    * @returns
    * @memberof VDom
    */
-  attr(props: Partial<HTMLElementTagNameMap[T]>) {
-    this.props = props
-    return this
+  diff(vdom: VDom<any>) {
+    const patches: Patch[] = []
+    this.diffwork(vdom, patches, 0, 0)
+    return patches.filter(patch => patch.result.length > 0)
+  }
+  /**
+   * diffwork
+   *
+   * @private
+   * @param {VDom<any>} vdom
+   * @param {Patch[]} patches
+   * @param {number} depth
+   * @param {number} index
+   * @memberof VDom
+   */
+  private diffwork(
+    vdom: VDom<any>,
+    patches: Patch[],
+    depth: number,
+    index: number
+  ) {
+    const patch: Patch = {
+      depth: depth,
+      index: index,
+      result: []
+    }
+    this.inner === vdom.inner
+      ? null
+      : patch.result.push({ type: 'inner', value: this.inner })
+    this.style === vdom.style
+      ? null
+      : patch.result.push({ type: 'style', value: this.style })
+    this.props === vdom.props
+      ? null
+      : patch.result.push({ type: 'props', value: this.props })
+    patches.push(patch)
+    this.children.forEach((child, index) =>
+      child.diffwork(vdom.children[index], patches, ++depth, index)
+    )
   }
 }
