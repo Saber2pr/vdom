@@ -40,6 +40,14 @@ export class VDom<T extends keyof HTMLElementTagNameMap> {
     this.props = {}
   }
   /**
+   * oldVdom
+   *
+   * @private
+   * @type {VDom<any>}
+   * @memberof VDom
+   */
+  static oldVdom: VDom<any>
+  /**
    * Render
    *
    * @static
@@ -49,8 +57,16 @@ export class VDom<T extends keyof HTMLElementTagNameMap> {
    * @memberof VDom
    */
   static Render(vdom: VDom<any>, container: HTMLElement) {
-    container.append(vdom.render())
-    return this
+    if (container.children.length === 0) {
+      container.append(vdom.render())
+      VDom.oldVdom = vdom
+    } else {
+      const patches = vdom.diff(VDom.oldVdom)
+      patches.forEach(patch => {
+        patch.result
+        ///
+      })
+    }
   }
   /**
    * children
