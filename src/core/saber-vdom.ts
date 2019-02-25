@@ -46,7 +46,7 @@ export class VDom<T extends keyof HTMLElementTagNameMap> {
    * @type {VDom<any>}
    * @memberof VDom
    */
-  static oldVdom: VDom<any>
+  private static oldVdom: VDom<any>
   /**
    * Render
    *
@@ -59,14 +59,43 @@ export class VDom<T extends keyof HTMLElementTagNameMap> {
   static Render(vdom: VDom<any>, container: HTMLElement) {
     if (container.children.length === 0) {
       container.append(vdom.render())
-      VDom.oldVdom = vdom
     } else {
       const patches = vdom.diff(VDom.oldVdom)
-      patches.forEach(patch => {
-        patch.result
-        ///
-      })
+      this.patchToDom(container, patches)
     }
+    VDom.oldVdom = vdom
+  }
+  private static patchToDom(
+    dom: Element,
+    patches: Patch[],
+    depth = 0,
+    index = 0
+  ) {
+    const actions = patches.find(
+      patch => patch.depth === depth && patch.index === index
+    ).result
+    actions.forEach(action =>
+      Array.from(dom.children).forEach((child, index) => {
+        switch (action.type) {
+          case 'inner':
+            child.innerHTML = action.value
+            break
+          case 'props':
+            Object.keys(action.value).forEach(
+              key => (child[key] = action.value[key])
+            )
+            break
+          case 'style':
+            Object.keys(action.value).forEach(
+              key => (child['style'][key] = action.value[key])
+            )
+            break
+          default:
+            throw 'type error'
+        }
+        this.patchToDom(child, patches, ++depth, index)
+      })
+    )
   }
   /**
    * children
