@@ -1,60 +1,63 @@
+/*
+ * @Author: saber2pr
+ * @Date: 2019-03-08 12:52:34
+ * @Last Modified by: saber2pr
+ * @Last Modified time: 2019-03-08 13:39:51
+ */
 export interface Component {
-  render(): this[]
+  render(): Fiber<this>[]
 }
 
-export interface AnyComponent extends Component {
-  [key: string]: any
+export interface IFiber<T extends Component> {
+  instance: T
+  parent: IFiber<T>
+  child: IFiber<T>
+  sibling: IFiber<T>
 }
 
-export class Node<T extends Component> {
+export class Fiber<T extends Component> implements IFiber<T> {
   constructor(public instance: T) {}
-  public parent: Node<T>
-  public child: Node<T>
-  public sibling: Node<T>
-  private alter: T
-
-  private attr(props: Partial<Pick<this, 'parent' | 'child' | 'sibling'>>) {
-    this.parent = props.parent || this.parent
-    this.child = props.child || this.child
-    this.sibling = props.sibling || this.sibling
+  public parent: Fiber<T>
+  public child: Fiber<T>
+  public sibling: Fiber<T>
+  set = <K extends keyof IFiber<T>>(key: K) => (value: this[K]) => {
+    this[key] = value
     return this
   }
+}
 
-  private link(parent: Node<T> = this) {
-    const elements = parent.instance.render()
-    return parent.attr({
-      child: elements.reduceRight<Node<T>>(
-        (sibling, instance) => new Node(instance).attr({ parent, sibling }),
-        null
-      )
-    }).child
-  }
+export const link = <T extends Component>(fiber: Fiber<T>) =>
+  fiber.set('child')(
+    fiber.instance.render().reduceRight(
+      (sibling, current) =>
+        current
+          .set('parent')(fiber)
+          .set('sibling')(sibling),
+      null
+    )
+  ).child
 
-  public diff(call: (pre: T, cur: T) => void, start: Node<T> = this) {
-    const root = start
-    let current = start
-    while (true) {
-      if (current.alter) {
-        call(current.alter, current.instance)
-      } else {
-        call(current.instance, current.instance)
-        current.alter = JSON.parse(JSON.stringify(current.instance))
-      }
-      let child = this.link(current)
-      if (child) {
-        current = child
-        continue
-      }
-      if (current === root) {
+export function walk<T extends Component>(
+  root: Fiber<T>,
+  cat: (fiber: Fiber<T>) => void
+) {
+  let current = root
+  while (true) {
+    cat(current)
+    const child = link(current)
+    if (child) {
+      current = child
+      continue
+    }
+    if (current === root) {
+      return
+    }
+    while (!current.sibling) {
+      if (!current.parent || current.parent === root) {
         return
       }
-      while (!current.sibling) {
-        if (!current.parent || current.parent === root) {
-          return
-        }
-        current = current.parent
-      }
-      current = current.sibling
+      current = current.parent
     }
+    current = current.sibling
   }
 }
