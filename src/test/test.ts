@@ -7,7 +7,7 @@ interface MyComponent extends Component {
 const Root: MyComponent = {
   value: 0,
   render() {
-    return [...first.render(), ...first_2.render()]
+    return [first, first_2]
   }
 }
 
@@ -21,7 +21,7 @@ const first: MyComponent = {
 const first_2: MyComponent = {
   value: 11,
   render() {
-    return [...second.render()]
+    return [second]
   }
 }
 

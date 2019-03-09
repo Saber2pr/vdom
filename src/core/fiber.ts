@@ -5,7 +5,7 @@
  * @Last Modified time: 2019-03-08 13:39:51
  */
 export interface Component {
-  render(): Fiber<this>[]
+  render(): this[]
 }
 
 export interface IFiber<T extends Component> {
@@ -29,11 +29,11 @@ export class Fiber<T extends Component> implements IFiber<T> {
 export const link = <T extends Component>(fiber: Fiber<T>) =>
   fiber.set('child')(
     fiber.instance.render().reduceRight(
-      (sibling, current) =>
-        current
+      (sibling, instance) =>
+        new Fiber(instance)
           .set('parent')(fiber)
           .set('sibling')(sibling),
-      null
+      null as Fiber<T>
     )
   ).child
 

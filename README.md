@@ -2,8 +2,6 @@
 
 > saber-vdom
 
-> pass fail.
-
 ```bash
 # from npm
 npm install saber-vdom
@@ -13,8 +11,6 @@ git clone https://github.com/Saber2pr/saber-vdom.git
 ```
 
 ```ts
-import { Component, walk, Fiber } from '../core/fiber'
-
 interface MyComponent extends Component {
   value: number
 }
@@ -22,7 +18,7 @@ interface MyComponent extends Component {
 const Root: MyComponent = {
   value: 0,
   render() {
-    return [...first.render(), ...first_2.render()]
+    return [first, first_2]
   }
 }
 
@@ -36,7 +32,7 @@ const first: MyComponent = {
 const first_2: MyComponent = {
   value: 11,
   render() {
-    return [...second.render()]
+    return [second]
   }
 }
 
