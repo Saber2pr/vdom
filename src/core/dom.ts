@@ -16,7 +16,9 @@ export interface Element<K extends keyof HTMLElementTagNameMap> {
 }
 
 const objset = (target, source) =>
-  Object.keys(source).forEach(key => (target[key] = source[key]))
+  Object.keys(source).forEach(key =>
+    target[key] !== source[key] ? (target[key] = source[key]) : null
+  )
 
 export const patch = (element: HTMLElement) => (
   uuid: string,
@@ -24,7 +26,7 @@ export const patch = (element: HTMLElement) => (
   style: CSS.Properties
 ) => {
   props && objset(element, props)
-  style && objset(element, style)
+  style && objset(element.style, style)
   element.id = uuid
   return element
 }
@@ -47,11 +49,9 @@ export const getFiberParentElement = (fiber: Fiber<Element<any>>) =>
 export const renderer = (container: HTMLElement) => (
   fiber: Fiber<Element<any>>
 ) => {
-  const current = fiber.parent
+  fiber.parent
     ? renderElement(getFiberParentElement(fiber))(fiber)
     : renderElement(container)(fiber)
-  fiber.child && renderElement(current)(fiber.child)
-  fiber.sibling && renderElement(current)(fiber.sibling)
 }
 
 export const render = (element: Element<any>, container: HTMLElement) => {

@@ -40,12 +40,12 @@ export const link = <T extends Component>(fiber: Fiber<T>) =>
 
 export function walk<T extends Component>(
   root: Fiber<T>,
-  cat: (fiber: Fiber<T>) => void
+  cat?: (fiber: Fiber<T>) => void
 ) {
   let current = root
   while (true) {
     const child = link(current)
-    cat(current)
+    cat && cat(current)
     if (child) {
       current = child
       continue

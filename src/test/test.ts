@@ -13,9 +13,11 @@ const first: Element<'button'> = {
   uuid: '02',
   props: {
     onclick: () => {
-      second.props.innerHTML = 'change'
-      render(Root, document.getElementById('root'))
-    }
+      second.props.innerHTML = String(Number(second.props.innerHTML) + 1)
+      second.style.color = second.style.color === 'red' ? 'green' : 'red'
+      update()
+    },
+    innerHTML: 'click'
   }
 }
 
@@ -31,8 +33,12 @@ const second: Element<'p'> = {
   type: 'p',
   uuid: '04',
   props: {
-    innerHTML: 'hello'
+    innerHTML: '0'
+  },
+  style: {
+    color: 'red'
   }
 }
 
-render(Root, document.getElementById('root'))
+const update = () => render(Root, document.getElementById('root'))
+update()
