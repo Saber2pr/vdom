@@ -1,35 +1,38 @@
-import { Component, walk, Fiber } from '../core/fiber'
+import { Element, render } from '../core/dom'
 
-interface MyComponent extends Component {
-  value: number
-}
-
-const Root: MyComponent = {
-  value: 0,
+const Root: Element<'div'> = {
+  type: 'div',
+  uuid: '01',
   render() {
     return [first, first_2]
   }
 }
 
-const first: MyComponent = {
-  value: 10,
-  render() {
-    return []
+const first: Element<'button'> = {
+  type: 'button',
+  uuid: '02',
+  props: {
+    onclick: () => {
+      second.props.innerHTML = 'change'
+      render(Root, document.getElementById('root'))
+    }
   }
 }
 
-const first_2: MyComponent = {
-  value: 11,
+const first_2: Element<'div'> = {
+  type: 'div',
+  uuid: '03',
   render() {
     return [second]
   }
 }
 
-const second: MyComponent = {
-  value: 20,
-  render() {
-    return []
+const second: Element<'p'> = {
+  type: 'p',
+  uuid: '04',
+  props: {
+    innerHTML: 'hello'
   }
 }
 
-walk(new Fiber(Root), fiber => console.log(fiber.instance.value))
+render(Root, document.getElementById('root'))

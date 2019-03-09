@@ -2,10 +2,10 @@
  * @Author: saber2pr
  * @Date: 2019-03-08 12:52:34
  * @Last Modified by: saber2pr
- * @Last Modified time: 2019-03-08 13:39:51
+ * @Last Modified time: 2019-03-09 11:49:29
  */
 export interface Component {
-  render(): this[]
+  render?(): this[]
 }
 
 export interface IFiber<T extends Component> {
@@ -27,6 +27,7 @@ export class Fiber<T extends Component> implements IFiber<T> {
 }
 
 export const link = <T extends Component>(fiber: Fiber<T>) =>
+  fiber.instance.render &&
   fiber.set('child')(
     fiber.instance.render().reduceRight(
       (sibling, instance) =>
@@ -43,8 +44,8 @@ export function walk<T extends Component>(
 ) {
   let current = root
   while (true) {
-    cat(current)
     const child = link(current)
+    cat(current)
     if (child) {
       current = child
       continue
