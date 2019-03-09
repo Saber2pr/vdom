@@ -1,6 +1,6 @@
 {
   "name": "saber-vdom",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "description": "saber-vdom",
   "repository": {
     "type": "git",
@@ -8,6 +8,10 @@
   },
   "author": "saber2pr",
   "license": "ISC",
+  "files": [
+    "lib/core/*",
+    "lib/index.*"
+  ],
   "main": "./lib/index.js",
   "scripts": {
     "test": "node ./lib/test/test.js",
@@ -16,7 +20,8 @@
   },
   "keywords": [
     "vdom",
-    "typescript"
+    "typescript",
+    "fiber"
   ],
   "devDependencies": {
     "typescript": "^3.2.1",
