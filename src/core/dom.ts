@@ -35,12 +35,12 @@ export const renderElement = (parent: HTMLElement) => (
   fiber: Fiber<Element<any>>
 ) => {
   const { uuid, type, props, style } = fiber.instance
-  let oldElement = document.getElementById(uuid)
-  if (!oldElement) {
-    oldElement = document.createElement(type)
-    parent.append(oldElement)
+  let target = document.getElementById(uuid)
+  if (!target) {
+    target = document.createElement(type)
+    parent.append(target)
   }
-  return patch(oldElement)(uuid, props, style)
+  return patch(target)(uuid, props, style)
 }
 
 export const getFiberParentElement = (fiber: Fiber<Element<any>>) =>
