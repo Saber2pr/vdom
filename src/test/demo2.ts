@@ -1,18 +1,7 @@
-# saber-vdom
+import { Element, render } from '../core/dom'
 
-> saber-vdom
-
-```bash
-# from npm
-npm install saber-vdom
-
-# from github
-git clone https://github.com/Saber2pr/saber-vdom.git
-```
-
-```ts
 const Content = (content: string, uuid: string): Element<'p'> => ({
-  uuid: uuid,
+  uuid,
   type: 'p',
   props: {
     innerHTML: content
@@ -25,7 +14,7 @@ const Button = (
   onclick: () => any
 ): Element<'button'> => ({
   type: 'button',
-  uuid: uuid,
+  uuid,
   props: {
     innerHTML: name,
     onclick
@@ -57,31 +46,3 @@ const Tab = (select: 'first' | 'second'): Element<'div'> => ({
 const update = (select: 'first' | 'second') =>
   render(Tab(select), document.getElementById('root'))
 update('first')
-```
-
----
-
-## start
-
-```bash
-npm install
-```
-
-```bash
-npm start
-
-npm run dev
-
-```
-
-> Author: saber2pr
-
----
-
-## develope and test
-
-> you should write ts in /src
-
-> you should make test in /src/test
-
-> export your core in /src/index.ts!

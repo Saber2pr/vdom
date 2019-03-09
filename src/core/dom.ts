@@ -7,12 +7,12 @@
 import { Fiber, walk } from './fiber'
 import * as CSS from 'csstype'
 
-export interface Element<K extends keyof HTMLElementTagNameMap> {
+export interface Element<K extends keyof HTMLElementTagNameMap = any> {
   uuid: string
   type: K
   props?: Partial<HTMLElementTagNameMap[K]>
   style?: CSS.Properties
-  render?(): Element<any>[]
+  children?: Element<any>[]
 }
 
 const objset = (target, source) =>
