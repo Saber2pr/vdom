@@ -2,16 +2,14 @@
  * @Author: saber2pr
  * @Date: 2019-03-09 10:11:15
  * @Last Modified by: saber2pr
- * @Last Modified time: 2019-03-09 11:53:04
+ * @Last Modified time: 2019-03-09 21:08:44
  */
 import { Fiber, walk } from './fiber'
-import * as CSS from 'csstype'
+import htm from 'htm'
 
 export interface Element<K extends keyof HTMLElementTagNameMap = any> {
-  uuid: string
   type: K
   props?: Partial<HTMLElementTagNameMap[K]>
-  style?: CSS.Properties
   children?: Element<any>[]
 }
 
@@ -20,10 +18,12 @@ const objset = (target, source) =>
     target[key] !== source[key] ? (target[key] = source[key]) : null
   )
 
-export const patch = (element: HTMLElement) => (
+export const patch = <K extends keyof HTMLElementTagNameMap = any>(
+  element: HTMLElement
+) => (
   uuid: string,
   props: Object,
-  style: CSS.Properties
+  style: HTMLElementTagNameMap[K]['style']
 ) => {
   props && objset(element, props)
   style && objset(element.style, style)
@@ -31,20 +31,26 @@ export const patch = (element: HTMLElement) => (
   return element
 }
 
-export const renderElement = (parent: HTMLElement) => (
-  fiber: Fiber<Element<any>>
+export const renderElement = (parent: HTMLElement) => <
+  K extends keyof HTMLElementTagNameMap = any
+>(
+  fiber: Fiber<Element<K>>
 ) => {
-  const { uuid, type, props, style } = fiber.instance
-  let target = document.getElementById(uuid)
+  const { type, props } = fiber.instance
+  const { id, style } = props
+  let target = document.getElementById(id)
   if (!target) {
     target = document.createElement(type)
     parent.append(target)
   }
-  return patch(target)(uuid, props, style)
+  return patch(target)(id, props, style)
 }
 
-export const getFiberParentElement = (fiber: Fiber<Element<any>>) =>
-  document.getElementById(fiber.parent.instance.uuid)
+export const getFiberParentElement = <
+  K extends keyof HTMLElementTagNameMap = any
+>(
+  fiber: Fiber<Element<K>>
+) => document.getElementById(fiber.parent.instance.props.id)
 
 export const renderer = (container: HTMLElement) => (
   fiber: Fiber<Element<any>>
@@ -57,3 +63,9 @@ export const renderer = (container: HTMLElement) => (
 export const render = (element: Element<any>, container: HTMLElement) => {
   walk(new Fiber(element), renderer(container))
 }
+
+export function h(type, props, ...children) {
+  return { type, props, children }
+}
+
+export const html = htm.bind(h)
