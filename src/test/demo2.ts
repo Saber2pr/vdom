@@ -1,25 +1,17 @@
 import { render, html } from '../core/dom'
 
 const Tab = (select: 'first' | 'second') => html`
-  <div id="004">
-    <div id="asasssa">
-      <button
-        id="scacasc"
-        onclick=${() => update('first')}
-        innerHTML="first"
-      ></button>
-      <button
-        id="scacasaasc"
-        onclick=${() => update('second')}
-        innerHTML="second"
-      ></button>
+  <div id="a1">
+    <div id="b1">
+      <button id="c1" onclick=${() => update('first')} innerHTML="first" />
+      <button id="c2" onclick=${() => update('second')} innerHTML="second" />
     </div>
     <div
-      id="aaaannn"
+      id="b2"
       innerHTML=${select === 'first'
         ? '1. this is first.'
         : '2. this is second.'}
-    ></div>
+    />
   </div>
 `
 

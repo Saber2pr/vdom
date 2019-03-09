@@ -2,6 +2,10 @@
 
 > saber-vdom
 
+> not support for TextNode. use innerHTML instead of.
+
+> should provide an Unique-id for Element.
+
 ```bash
 # from npm
 npm install saber-vdom
@@ -10,23 +14,25 @@ npm install saber-vdom
 git clone https://github.com/Saber2pr/saber-vdom.git
 ```
 
+# For example
+
 ```ts
-const Content = (content: string, uuid: string): Element<'p'> => ({
-  uuid: uuid,
+const Content = (content: string, id: string): Element<'p'> => ({
   type: 'p',
   props: {
+    id,
     innerHTML: content
   }
 })
 
 const Button = (
   name: string,
-  uuid: string,
+  id: string,
   onclick: () => any
 ): Element<'button'> => ({
   type: 'button',
-  uuid: uuid,
   props: {
+    id,
     innerHTML: name,
     onclick
   }
@@ -34,13 +40,17 @@ const Button = (
 
 const Line = (...children: Element<any>[]): Element<'div'> => ({
   type: 'div',
-  uuid: 'xaadada',
+  props: {
+    id: 'xaadada'
+  },
   children
 })
 
 const Tab = (select: 'first' | 'second'): Element<'div'> => ({
   type: 'div',
-  uuid: '004',
+  props: {
+    id: '004'
+  },
   children: [
     Line(
       Button('first', '0xxx0xx1', () => update('first')),
@@ -53,6 +63,29 @@ const Tab = (select: 'first' | 'second'): Element<'div'> => ({
     )
   ]
 })
+
+const update = (select: 'first' | 'second') =>
+  render(Tab(select), document.getElementById('root'))
+update('first')
+```
+
+## use htm
+
+```ts
+const Tab = (select: 'first' | 'second') => html`
+  <div id="a1">
+    <div id="b1">
+      <button id="c1" onclick=${() => update('first')} innerHTML="first" />
+      <button id="c2" onclick=${() => update('second')} innerHTML="second" />
+    </div>
+    <div
+      id="b2"
+      innerHTML=${select === 'first'
+        ? '1. this is first.'
+        : '2. this is second.'}
+    />
+  </div>
+`
 
 const update = (select: 'first' | 'second') =>
   render(Tab(select), document.getElementById('root'))

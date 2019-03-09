@@ -1,6 +1,6 @@
 {
   "name": "saber-vdom",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "saber-vdom",
   "repository": {
     "type": "git",
@@ -30,7 +30,6 @@
     "typescript": "^3.2.1"
   },
   "dependencies": {
-    "csstype": "^2.6.2",
     "htm": "^2.1.1"
   }
 }
