@@ -2,9 +2,9 @@
 
 > saber-vdom
 
-> not support for TextNode. use innerHTML instead of.
+> not support for TextNode. use innerHTML instead.
 
-> should provide an Unique-id for Element.
+> should provide an Unique-id for each Element.
 
 ```bash
 # from npm

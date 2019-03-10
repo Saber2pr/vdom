@@ -42,6 +42,7 @@ export const renderElement = (parent: HTMLElement) => <
 ) => {
   const { type, props } = fiber.instance
   const { id, style } = props
+  Differ.instance.notice(id)
   let target = document.getElementById(id)
   if (!target) {
     target = document.createElement(type)
@@ -66,6 +67,7 @@ export const renderer = (container: HTMLElement) => (
 
 export const render = (element: Element<any>, container: HTMLElement) => {
   walk(new Fiber(element), renderer(container))
+  Differ.instance.diff()
 }
 
 export function h(type, props, ...children) {
@@ -73,3 +75,25 @@ export function h(type, props, ...children) {
 }
 
 export const html = htm.bind(h)
+
+class Differ {
+  private constructor() {
+    this.cache = []
+    this.oldCache = []
+  }
+  public static instance: Differ = new Differ()
+  private cache: string[]
+  private oldCache: string[]
+  notice(id: string) {
+    this.cache.push(id)
+  }
+  diff() {
+    this.oldCache.forEach(id =>
+      !this.cache.includes(id)
+        ? document.getElementById(id) && document.getElementById(id).remove()
+        : null
+    )
+    this.oldCache = [...this.cache]
+    this.cache = []
+  }
+}
