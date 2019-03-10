@@ -113,6 +113,11 @@ npm start
 
 npm run dev
 
+npm test
+
+npm run min
+
+npm run build
 ```
 
 > Author: saber2pr
