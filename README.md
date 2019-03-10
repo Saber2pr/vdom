@@ -1,10 +1,8 @@
 # saber-vdom
 
-> saber-vdom
+[![npm](https://img.shields.io/npm/v/saber-vdom.svg?color=blue)](https://www.npmjs.com/package/saber-vdom)
 
-> not support for TextNode. use innerHTML instead.
-
-> should provide an Unique-id for each Element.
+> a fast vdom renderer for javascript.
 
 ```bash
 # from npm
@@ -14,7 +12,52 @@ npm install saber-vdom
 git clone https://github.com/Saber2pr/saber-vdom.git
 ```
 
-## For example
+### feature:
+
+0. only two apis.
+
+1. 3.56kb.
+
+1. no support for TextNode. use innerHTML instead.
+
+1. should provide an Unique-id for each Element.
+
+## API
+
+```js
+svdom.html`<div></div>`
+
+svdom.render(element, container)
+```
+
+### like this
+
+```js
+var p = svdom.html`
+<div id="00">
+  <p id="10" innerHTML="hello"/>
+  <p id="11" innerHTML="world"/>
+</div>`
+
+svdom.render(p, document.getElementById('root'))
+```
+
+#### if a counter
+
+```js
+var counter = num => svdom.html`
+<div id="00">
+  <p id="10" innerHTML="count:"/>
+  <p id="11" innerHTML=${num}/>
+  <button innerHTML="click" onclick=${() => update(num + 1)}/>
+</div>`
+
+var update = num => svdom.render(counter(num), document.getElementById('root'))
+
+update(0)
+```
+
+## For typescript
 
 ```ts
 const Content = (content: string, id: string): Element<'p'> => ({
@@ -90,41 +133,6 @@ const Tab = (select: 'first' | 'second') => html`
 const update = (select: 'first' | 'second') =>
   render(Tab(select), document.getElementById('root'))
 update('first')
-```
-
-## API
-
-```js
-svdom.html`<div></div>`
-
-svdom.render(element, container)
-```
-
-### like this
-
-```js
-var p = svdom.html`
-<div id="00">
-  <p id="10" innerHTML="hello"/>
-  <p id="11" innerHTML="world"/>
-</div>`
-
-svdom.render(p, document.getElementById('root'))
-```
-
-#### if a counter
-
-```js
-var counter = num => svdom.html`
-<div id="00">
-  <p id="10" innerHTML="count:"/>
-  <p id="11" innerHTML=${num}/>
-  <button innerHTML="click" onclick=${() => update(num + 1)}/>
-</div>`
-
-var update = num => svdom.render(counter(num), document.getElementById('root'))
-
-update(0)
 ```
 
 ---
