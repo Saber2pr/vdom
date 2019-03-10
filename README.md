@@ -14,7 +14,7 @@ npm install saber-vdom
 git clone https://github.com/Saber2pr/saber-vdom.git
 ```
 
-# For example
+## For example
 
 ```ts
 const Content = (content: string, id: string): Element<'p'> => ({
@@ -90,6 +90,14 @@ const Tab = (select: 'first' | 'second') => html`
 const update = (select: 'first' | 'second') =>
   render(Tab(select), document.getElementById('root'))
 update('first')
+```
+
+## API
+
+```js
+svdom.html`<div></div>`
+
+svdom.render(element, container)
 ```
 
 ---

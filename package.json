@@ -1,6 +1,6 @@
 {
   "name": "saber-vdom",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "saber-vdom",
   "repository": {
     "type": "git",
@@ -16,7 +16,9 @@
   "scripts": {
     "test": "node ./lib/test/test.js",
     "start": "tsc --watch",
-    "dev": "rollup -c --watch"
+    "dev": "rollup -c --watch",
+    "min": "uglifyjs ./build/bundle.js -o saber-vdom.min.js -c -m",
+    "build": "rm -r ./lib && tsc && rollup -c && npm run min"
   },
   "keywords": [
     "vdom",
@@ -27,7 +29,8 @@
     "rollup": "^1.1.2",
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-node-resolve": "^4.0.0",
-    "typescript": "^3.2.1"
+    "typescript": "^3.2.1",
+    "uglify-js": "^3.4.9"
   },
   "dependencies": {
     "htm": "^2.1.1"
