@@ -112,6 +112,21 @@ var p = svdom.html`
 svdom.render(p, document.getElementById('root'))
 ```
 
+#### if a counter
+
+```js
+var counter = num => svdom.html`
+<div id="00">
+  <p id="10" innerHTML="count:"/>
+  <p id="11" innerHTML=${num}/>
+  <button innerHTML="click" onclick=${() => update(num + 1)}/>
+</div>`
+
+var update = num => svdom.render(counter(num), document.getElementById('root'))
+
+update(0)
+```
+
 ---
 
 ## start
