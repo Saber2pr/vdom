@@ -100,6 +100,18 @@ svdom.html`<div></div>`
 svdom.render(element, container)
 ```
 
+### like this
+
+```js
+var p = svdom.html`
+<div id="00">
+  <p id="10" innerHTML="hello"/>
+  <p id="11" innerHTML="world"/>
+</div>`
+
+svdom.render(p, document.getElementById('root'))
+```
+
 ---
 
 ## start
