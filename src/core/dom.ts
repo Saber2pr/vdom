@@ -13,19 +13,23 @@ export interface Element<K extends keyof HTMLElementTagNameMap = any> {
   children?: Element<any>[]
 }
 
-const objset = (target, source) =>
-  Object.keys(source).forEach(key =>
-    target[key] !== source[key] ? (target[key] = source[key]) : null
-  )
+export const objset = <T>(target: Object, source: T, omit?: keyof T) =>
+  Object.keys(source).forEach(key => {
+    if (key === omit) {
+      return
+    } else {
+      target[key] !== source[key] ? (target[key] = source[key]) : null
+    }
+  })
 
 export const patch = <K extends keyof HTMLElementTagNameMap = any>(
   element: HTMLElement
 ) => (
   uuid: string,
-  props: Object,
+  props: Partial<HTMLElementTagNameMap[K]>,
   style: HTMLElementTagNameMap[K]['style']
 ) => {
-  props && objset(element, props)
+  props && objset(element, props, 'style')
   style && objset(element.style, style)
   element.id = uuid
   return element

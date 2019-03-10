@@ -1,9 +1,15 @@
 import { html, render } from '../core/dom'
 
-const p = html`
-  <p id="xxx122" style=${{ color: 'red' }} innerHTML=${'Hello world!'} />
+const p = (color: 'red' | 'green') => html`
+  <p
+    id="xxx122"
+    style=${{ color }}
+    innerHTML=${'Hello world!'}
+    onclick=${() => (color === 'red' ? update('green') : update('red'))}
+  />
 `
 
-render(p, document.getElementById('root'))
+const update = (color: 'red' | 'green') =>
+  render(p(color), document.getElementById('root'))
 
-console.log(p)
+update('green')
