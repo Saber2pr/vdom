@@ -2,10 +2,9 @@
  * @Author: saber2pr
  * @Date: 2019-03-09 10:11:15
  * @Last Modified by: saber2pr
- * @Last Modified time: 2019-03-10 13:42:49
+ * @Last Modified time: 2019-03-12 06:22:24
  */
 import { Fiber, walk } from './fiber'
-import htm from 'htm'
 
 export interface Element<K extends keyof HTMLElementTagNameMap = any> {
   type: K
@@ -37,12 +36,29 @@ export const patch = <K extends keyof HTMLElementTagNameMap = any>(
 
 export const renderElement = (parent: HTMLElement) => <
   K extends keyof HTMLElementTagNameMap = any
->(
-  fiber: Fiber<Element<K>>
-) => {
-  const { type, props } = fiber.instance
+>({
+  instance
+}: Fiber<Element<K>>) => {
+  if (typeof instance === 'number' || typeof instance === 'string') {
+    const children = parent.childNodes
+    if (children.length > 0) {
+      const child = children[0]
+      if (instance !== child.nodeValue) {
+        const target = document.createTextNode(instance)
+        children[0].remove()
+        parent.append(target)
+        return target
+      }
+    } else {
+      const target = document.createTextNode(instance)
+      parent.append(target)
+      return target
+    }
+    return children[0]
+  }
+  const { type, props } = instance
   const { id, style } = props
-  Differ.instance.notice(id)
+  Recorder.instance.notice(id)
   let target = document.getElementById(id)
   if (!target) {
     target = document.createElement(type)
@@ -67,27 +83,21 @@ export const renderer = (container: HTMLElement) => (
 
 export const render = (element: Element<any>, container: HTMLElement) => {
   walk(new Fiber(element), renderer(container))
-  Differ.instance.diff()
+  Recorder.instance.clear()
 }
 
-export function h(type, props, ...children) {
-  return { type, props, children }
-}
-
-export const html = htm.bind(h)
-
-class Differ {
+class Recorder {
   private constructor() {
     this.cache = []
     this.oldCache = []
   }
-  public static instance: Differ = new Differ()
+  public static instance: Recorder = new Recorder()
   private cache: string[]
   private oldCache: string[]
   notice(id: string) {
     this.cache.push(id)
   }
-  diff() {
+  clear() {
     this.oldCache.forEach(id =>
       !this.cache.includes(id)
         ? document.getElementById(id) && document.getElementById(id).remove()

@@ -18,7 +18,9 @@ const second: Element<'p'> = {
   type: 'p',
   props: {
     innerHTML: '0',
-    id: '04'
+    id: '04',
+    // @ts-ignore
+    style: {}
   }
 }
 

@@ -16,9 +16,7 @@ git clone https://github.com/Saber2pr/saber-vdom.git
 
 0. only two apis.
 
-1. 3.56kb.
-
-1. no support for TextNode. use innerHTML instead.
+1. 3.87kb.
 
 1. should provide an Unique-id for each Element.
 
@@ -35,8 +33,8 @@ svdom.render(element, container)
 ```js
 var p = svdom.html`
 <div id="00">
-  <p id="10" innerHTML="hello"/>
-  <p id="11" innerHTML="world"/>
+  <p id="10">hello</p>
+  <p id="11">world</p>
 </div>`
 
 svdom.render(p, document.getElementById('root'))
@@ -47,9 +45,9 @@ svdom.render(p, document.getElementById('root'))
 ```js
 var counter = num => svdom.html`
 <div id="00">
-  <p id="10" innerHTML="count:"/>
-  <p id="11" innerHTML=${num}/>
-  <button innerHTML="click" onclick=${() => update(num + 1)}/>
+  <p id="10">count:</p>
+  <p id="11">${num}</p>
+  <button onclick=${() => update(num + 1)}>click</button>
 </div>`
 
 var update = num => svdom.render(counter(num), document.getElementById('root'))
@@ -57,82 +55,52 @@ var update = num => svdom.render(counter(num), document.getElementById('root'))
 update(0)
 ```
 
-## For typescript
+## For typescript-tsx
 
-```ts
-const Content = (content: string, id: string): Element<'p'> => ({
-  type: 'p',
-  props: {
-    id,
-    innerHTML: content
-  }
-})
+```tsx
+import { h } from 'saber-vdom'
+import { render } from 'saber-vdom'
 
-const Button = (
-  name: string,
-  id: string,
-  onclick: () => any
-): Element<'button'> => ({
-  type: 'button',
-  props: {
-    id,
-    innerHTML: name,
-    onclick
-  }
-})
+const Div = name => (
+  <div id="a0">
+    link:
+    <div id="b0">
+      <a id="c0">{name}</a>
+    </div>
+    hello
+  </div>
+)
 
-const Line = (...children: Element<any>[]): Element<'div'> => ({
-  type: 'div',
-  props: {
-    id: 'xaadada'
-  },
-  children
-})
+// use Div(), not <Div/>
+const View = () => <div id="v0">{Div('test')}</div>
 
-const Tab = (select: 'first' | 'second'): Element<'div'> => ({
-  type: 'div',
-  props: {
-    id: '004'
-  },
-  children: [
-    Line(
-      Button('first', '0xxx0xx1', () => update('first')),
-      Button('second', '0xxx0xxeqeq1', () => update('second'))
-    ),
-    Line(
-      select === 'first'
-        ? Content('1. this is first.', 'abcdef')
-        : Content('2. this is second.', 'abcdef')
-    )
-  ]
-})
-
-const update = (select: 'first' | 'second') =>
-  render(Tab(select), document.getElementById('root'))
-update('first')
+render(View(), document.getElementById('root'))
 ```
 
-## use htm
+1. ensure tsconfig
 
-```ts
-const Tab = (select: 'first' | 'second') => html`
-  <div id="a1">
-    <div id="b1">
-      <button id="c1" onclick=${() => update('first')} innerHTML="first" />
-      <button id="c2" onclick=${() => update('second')} innerHTML="second" />
-    </div>
-    <div
-      id="b2"
-      innerHTML=${select === 'first'
-        ? '1. this is first.'
-        : '2. this is second.'}
-    />
-  </div>
-`
+```
+"jsx": "react",
+"jsxFactory": "h"
+```
 
-const update = (select: 'first' | 'second') =>
-  render(Tab(select), document.getElementById('root'))
-update('first')
+for example:
+
+```json
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "declaration": true,
+    "outDir": "./lib",
+    "esModuleInterop": true,
+    "jsx": "react",
+    "jsxFactory": "h",
+    "lib": ["dom", "es2015"]
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "lib"]
+}
 ```
 
 ---

@@ -1,6 +1,6 @@
 {
   "name": "saber-vdom",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "a fast vdom renderer for javascript.",
   "repository": {
     "type": "git",

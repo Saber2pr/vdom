@@ -4,7 +4,8 @@
     "module": "commonjs",
     "declaration": true,
     "outDir": "./lib",
-    "jsx": "preserve",
+    "jsx": "react",
+    "jsxFactory": "h",
     "esModuleInterop": true,
     "lib": ["dom", "es2015"]
   },
