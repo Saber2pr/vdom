@@ -16,7 +16,7 @@ git clone https://github.com/Saber2pr/saber-vdom.git
 
 0. only two apis.
 
-1. 3.87kb.
+1. 3.99kb.
 
 1. should provide an Unique-id for each Element.
 
@@ -47,7 +47,7 @@ var counter = num => svdom.html`
 <div id="00">
   <p id="10">count:</p>
   <p id="11">${num}</p>
-  <button onclick=${() => update(num + 1)}>click</button>
+  <button id="20" onclick=${() => update(num + 1)}>click</button>
 </div>`
 
 var update = num => svdom.render(counter(num), document.getElementById('root'))
@@ -117,8 +117,6 @@ npm start
 npm run dev
 
 npm test
-
-npm run min
 
 npm run build
 ```

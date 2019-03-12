@@ -1,6 +1,6 @@
 {
   "name": "saber-vdom",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "a fast vdom renderer for javascript.",
   "repository": {
     "type": "git",
@@ -17,8 +17,7 @@
     "test": "node ./lib/test/test.js",
     "start": "tsc --watch",
     "dev": "rollup -c --watch",
-    "min": "uglifyjs ./build/bundle.js -o saber-vdom.min.js -c -m",
-    "build": "rm -r ./lib && tsc && rollup -c && npm run min"
+    "build": "rollup -c && uglifyjs ./build/bundle.js -o saber-vdom.min.js -c -m"
   },
   "keywords": [
     "vdom",
