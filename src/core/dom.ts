@@ -37,21 +37,17 @@ export const patch = <K extends keyof HTMLElementTagNameMap = any>(
 export const renderTextElement = (parent: HTMLElement) => (
   instance: string | number
 ) => {
-  const children = parent.childNodes
-  if (children.length > 0) {
-    const child = children[0]
+  const child = parent.childNodes[0]
+  if (child) {
     if (instance !== child.nodeValue) {
-      const target = document.createTextNode(String(instance))
-      children[0].remove()
-      parent.append(target)
-      return target
+      child.nodeValue = String(instance)
     }
+    return child
   } else {
     const target = document.createTextNode(String(instance))
     parent.append(target)
     return target
   }
-  return children[0]
 }
 
 export const renderElement = (parent: HTMLElement) => <
