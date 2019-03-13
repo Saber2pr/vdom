@@ -27,4 +27,4 @@ const pro = {
   plugins: [resolve(), commonjs()]
 }
 
-export default dev
+export default pro

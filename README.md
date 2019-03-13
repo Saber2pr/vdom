@@ -16,7 +16,7 @@ git clone https://github.com/Saber2pr/saber-vdom.git
 
 0. only two apis.
 
-1. 3.92kb.
+1. 4.22kb.
 
 1. should provide an Unique-id for each Element.
 
@@ -61,7 +61,7 @@ update(0)
 import { h } from 'saber-vdom'
 import { render } from 'saber-vdom'
 
-const Div = name => (
+const Div = ({ name }) => (
   <div id="a0">
     link:
     <div id="b0">
@@ -71,8 +71,11 @@ const Div = name => (
   </div>
 )
 
-// use Div(), not <Div/>
-const View = () => <div id="v0">{Div('test')}</div>
+const View = () => (
+  <div id="v0">
+    <Div name="test" />
+  </div>
+)
 
 render(View(), document.getElementById('root'))
 ```
