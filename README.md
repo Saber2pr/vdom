@@ -55,25 +55,48 @@ var update = num => svdom.render(counter(num), document.getElementById('root'))
 update(0)
 ```
 
+#### if a counter(use functional)
+
+```js
+var Count = ({ num }) => svdom.html`<span id="c00">${num}</span>`
+
+var Div = num => svdom.html`
+<div id="d00">
+  hello
+  <${Count} num={${num}}/>
+  <button id="d10" onclick=${() => update(num + 1)}>click</button>
+  <p id="d12">footer</p>
+</div>
+`
+
+var update = num => svdom.render(Div(num), document.getElementById('root'))
+update(0)
+```
+
 ## For typescript-tsx
 
 ```tsx
 import { h } from 'saber-vdom'
 import { render } from 'saber-vdom'
 
-const Div = ({ name }) => (
+interface Div {
+  name: string
+  children?: any[]
+}
+
+const Div = ({ name, children }: Div) => (
   <div id="a0">
-    link:
-    <div id="b0">
-      <a id="c0">{name}</a>
-    </div>
-    hello
+    <p>{name}</p>
+    {children}
   </div>
 )
 
 const View = () => (
   <div id="v0">
-    <Div name="test" />
+    <Div name="test">
+      <p>child0</p>
+      <p>child1</p>
+    </Div>
   </div>
 )
 
@@ -95,9 +118,9 @@ const Para = (
 // good
 const Para = (
   <p id="00">
-    <p id="10">header</p>
+    <span id="10">header</span>
     <p id="11">content</p>
-    <p id="12">footer</p>
+    <span id="12">footer</span>
   </p>
 )
 ```
