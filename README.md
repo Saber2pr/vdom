@@ -77,6 +77,28 @@ const View = () => <div id="v0">{Div('test')}</div>
 render(View(), document.getElementById('root'))
 ```
 
+## Notice
+
+```tsx
+// wrong
+const Para = (
+  <p id="00">
+    header
+    <p id="10">content</p>
+    footer
+  </p>
+)
+
+// good
+const Para = (
+  <p id="00">
+    <p id="10">header</p>
+    <p id="11">content</p>
+    <p id="12">footer</p>
+  </p>
+)
+```
+
 1. ensure tsconfig
 
 ```
