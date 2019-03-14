@@ -2,7 +2,7 @@
  * @Author: saber2pr
  * @Date: 2019-03-09 10:11:15
  * @Last Modified by: saber2pr
- * @Last Modified time: 2019-03-14 01:20:39
+ * @Last Modified time: 2019-03-15 05:20:26
  */
 import { Fiber, walk } from './fiber'
 
@@ -34,7 +34,7 @@ export const patch = <K extends keyof HTMLElementTagNameMap = any>(
   return element
 }
 
-export const renderTextElement = (parent: HTMLElement) => (
+const renderTextElement = (parent: HTMLElement) => (
   instance: string | number
 ) => {
   const child = parent.childNodes[0]
@@ -50,7 +50,7 @@ export const renderTextElement = (parent: HTMLElement) => (
   }
 }
 
-export const renderElement = (parent: HTMLElement) => <
+const renderElement = (parent: HTMLElement) => <
   K extends keyof HTMLElementTagNameMap = any
 >({
   instance
@@ -69,15 +69,11 @@ export const renderElement = (parent: HTMLElement) => <
   return patch(target)(id, props, style)
 }
 
-export const getFiberParentElement = <
-  K extends keyof HTMLElementTagNameMap = any
->(
+const getFiberParentElement = <K extends keyof HTMLElementTagNameMap = any>(
   fiber: Fiber<Element<K>>
 ) => document.getElementById(fiber.parent.instance.props.id)
 
-export const renderer = (container: HTMLElement) => (
-  fiber: Fiber<Element<any>>
-) => {
+const renderer = (container: HTMLElement) => (fiber: Fiber<Element<any>>) => {
   fiber.parent
     ? renderElement(getFiberParentElement(fiber))(fiber)
     : renderElement(container)(fiber)

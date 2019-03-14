@@ -16,7 +16,7 @@ git clone https://github.com/Saber2pr/saber-vdom.git
 
 0. only two apis.
 
-1. 4.22kb.
+1. 3.99kb.
 
 1. should provide an Unique-id for each Element.
 
