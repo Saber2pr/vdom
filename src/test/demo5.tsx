@@ -3,7 +3,7 @@ import { h } from '../core/h'
 
 const View = (num: number) => (
   <div>
-    <div>count:</div>
+    count:
     <p>{num}</p>
     <button onclick={() => update(num + 1)}>click</button>
   </div>

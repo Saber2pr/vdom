@@ -1,8 +1,8 @@
 /*
  * @Author: saber2pr
  * @Date: 2019-03-16 23:25:15
- * @Last Modified by:   saber2pr
- * @Last Modified time: 2019-03-16 23:25:15
+ * @Last Modified by: saber2pr
+ * @Last Modified time: 2019-03-16 23:29:14
  */
 import { Fiber, walk } from './fiber'
 
@@ -44,11 +44,8 @@ export const render = (element: Element<any>, container: HTMLElement) => {
 }
 
 function createElement(fiber: Fiber<Element<any>>) {
-  if (
-    typeof fiber.instance === 'string' ||
-    typeof fiber.instance === 'number'
-  ) {
-    const dom = document.createTextNode(fiber.instance)
+  if (isTextFiber(fiber)) {
+    const dom = document.createTextNode(String(fiber.instance))
     fiber.set('base')(dom as any)
     return dom
   } else {
