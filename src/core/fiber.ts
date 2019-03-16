@@ -2,7 +2,7 @@
  * @Author: saber2pr
  * @Date: 2019-03-08 12:52:34
  * @Last Modified by: saber2pr
- * @Last Modified time: 2019-03-15 02:29:54
+ * @Last Modified time: 2019-03-16 23:22:13
  */
 export interface Component {
   children?: this[]
@@ -13,6 +13,7 @@ export interface IFiber<T extends Component> {
   parent: IFiber<T>
   child: IFiber<T>
   sibling: IFiber<T>
+  base: HTMLElement
 }
 
 export class Fiber<T extends Component> implements IFiber<T> {
@@ -20,6 +21,8 @@ export class Fiber<T extends Component> implements IFiber<T> {
   public parent: Fiber<T>
   public child: Fiber<T>
   public sibling: Fiber<T>
+  public alternate: IFiber<T>
+  public base: HTMLElement
   set = <K extends keyof IFiber<T>>(key: K) => (value: this[K]) => {
     this[key] = value
     return this
@@ -38,27 +41,23 @@ export const link = <T extends Component>(fiber: Fiber<T>) =>
     )
   ).child
 
-export function walk<T extends Component>(
-  root: Fiber<T>,
-  cat?: (fiber: Fiber<T>) => void
-) {
-  let current = root
-  while (true) {
-    const child = link(current)
-    cat && cat(current)
-    if (child) {
-      current = child
-      continue
-    }
-    if (current === root) {
-      return
-    }
-    while (!current.sibling) {
-      if (!current.parent || current.parent === root) {
-        return
-      }
-      current = current.parent
-    }
-    current = current.sibling
+export const walk = <T extends Component>(fiber: Fiber<T>) => {
+  fiber.child || link(fiber)
+  let current = fiber
+  if (current.child) {
+    return current.child
   }
+  if (current.sibling) {
+    return current.sibling
+  }
+  if (!current.parent) {
+    return current
+  }
+  while (!current.parent.sibling) {
+    current = current.parent
+    if (!current.parent) {
+      return null
+    }
+  }
+  return current.parent.sibling
 }

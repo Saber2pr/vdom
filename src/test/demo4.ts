@@ -2,16 +2,16 @@ import { render } from '../core/dom'
 import { html } from '../core/h'
 
 const Home = html`
-  <div id="h0">
-    <p id="h10">home</p>
-    <a id="h11" href="#project">project</a>
+  <div>
+    <p>home</p>
+    <a href="#project">project</a>
   </div>
 `
 
 const Project = html`
-  <div id="p0">
-    <p id="p10">Project</p>
-    <a id="p11" href="#home">home</a>
+  <div>
+    <p>Project</p>
+    <a href="#home">home</a>
   </div>
 `
 

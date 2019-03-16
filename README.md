@@ -12,14 +12,6 @@ npm install saber-vdom
 git clone https://github.com/Saber2pr/saber-vdom.git
 ```
 
-### feature:
-
-0. only two apis.
-
-1. 3.99kb.
-
-1. should provide an Unique-id for each Element.
-
 ## API
 
 ```js
@@ -32,9 +24,9 @@ svdom.render(element, container)
 
 ```js
 var p = svdom.html`
-<div id="00">
-  <p id="10">hello</p>
-  <p id="11">world</p>
+<div>
+  <p>hello</p>
+  <p>world</p>
 </div>`
 
 svdom.render(p, document.getElementById('root'))
@@ -44,10 +36,10 @@ svdom.render(p, document.getElementById('root'))
 
 ```js
 var counter = num => svdom.html`
-<div id="00">
-  <p id="10">count:</p>
-  <p id="11">${num}</p>
-  <button id="20" onclick=${() => update(num + 1)}>click</button>
+<div>
+  <p>count:</p>
+  <p>${num}</p>
+  <button onclick=${() => update(num + 1)}>click</button>
 </div>`
 
 var update = num => svdom.render(counter(num), document.getElementById('root'))
@@ -58,14 +50,14 @@ update(0)
 #### if a counter(use functional)
 
 ```js
-var Count = ({ num }) => svdom.html`<span id="c00">${num}</span>`
+var Count = ({ num }) => svdom.html`<span>${num}</span>`
 
 var Div = num => svdom.html`
-<div id="d00">
+<div>
   hello
   <${Count} num={${num}}/>
-  <button id="d10" onclick=${() => update(num + 1)}>click</button>
-  <p id="d12">footer</p>
+  <button onclick=${() => update(num + 1)}>click</button>
+  <p >footer</p>
 </div>
 `
 
@@ -85,14 +77,14 @@ interface Div {
 }
 
 const Div = ({ name, children }: Div) => (
-  <div id="a0">
+  <div>
     <p>{name}</p>
     {children}
   </div>
 )
 
 const View = () => (
-  <div id="v0">
+  <div>
     <Div name="test">
       <p>child0</p>
       <p>child1</p>
@@ -101,28 +93,6 @@ const View = () => (
 )
 
 render(View(), document.getElementById('root'))
-```
-
-## Notice
-
-```tsx
-// wrong
-const Para = (
-  <p id="00">
-    header
-    <p id="10">content</p>
-    footer
-  </p>
-)
-
-// good
-const Para = (
-  <p id="00">
-    <span id="10">header</span>
-    <p id="11">content</p>
-    <span id="12">footer</span>
-  </p>
-)
 ```
 
 1. ensure tsconfig

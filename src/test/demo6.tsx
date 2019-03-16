@@ -7,8 +7,8 @@ interface Div {
 }
 
 const Div = ({ name, children }: Div) => (
-  <div id="d00">
-    <div id="d10">{'testFunc' + name}</div>
+  <div>
+    <div>{'testFunc' + name}</div>
     {children}
   </div>
 )
@@ -18,21 +18,21 @@ interface Map {
 }
 
 const Map = ({ data }: Map) => (
-  <div id="m00">
-    {data.map((d, index) => (
-      <p id={'mp' + index}>{`raw: ${d}`}</p>
+  <div>
+    {data.map(d => (
+      <p>{`raw: ${d}`}</p>
     ))}
   </div>
 )
 
 const view = (
-  <div id="v00">
-    <p id="v10">head</p>
+  <div>
+    <p>head</p>
     <Div name="test">
-      <div id="v20">testChild0</div>
-      <div id="v21">testChild1</div>
+      <div>testChild0</div>
+      <div>testChild1</div>
     </Div>
-    <p id="v11">foot</p>
+    <p>foot</p>
     <Map data={['line1', 'line2', 'line3', 'line4']} />
   </div>
 )
