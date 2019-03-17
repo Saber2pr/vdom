@@ -1,10 +1,9 @@
-import { render } from '../core/dom'
+import { render } from '../core/diff'
 import { h } from '../core/h'
 
 const View = (num: number) => (
   <div>
-    count:
-    <p>{num}</p>
+    count:{num}
     <button onclick={() => update(num + 1)}>click</button>
   </div>
 )

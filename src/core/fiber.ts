@@ -2,27 +2,28 @@
  * @Author: saber2pr
  * @Date: 2019-03-08 12:52:34
  * @Last Modified by: saber2pr
- * @Last Modified time: 2019-03-16 23:22:13
+ * @Last Modified time: 2019-03-17 11:14:06
  */
 export interface Component {
+  type?: any
+  props?: any
   children?: this[]
 }
 
-export interface IFiber<T extends Component> {
+export interface IFiber<T extends Component = Component> {
   instance: T
   parent: IFiber<T>
   child: IFiber<T>
   sibling: IFiber<T>
-  base: HTMLElement
+  origin: any
 }
 
-export class Fiber<T extends Component> implements IFiber<T> {
+export class Fiber<T extends Component = Component> implements IFiber<T> {
   constructor(public instance: T) {}
   public parent: Fiber<T>
   public child: Fiber<T>
   public sibling: Fiber<T>
-  public alternate: IFiber<T>
-  public base: HTMLElement
+  public origin: any
   set = <K extends keyof IFiber<T>>(key: K) => (value: this[K]) => {
     this[key] = value
     return this

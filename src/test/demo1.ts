@@ -1,4 +1,5 @@
-import { Element, render } from '../core/dom'
+import { render } from '../core/diff'
+import { Element } from '../core/dom'
 
 const first: Element<'button'> = {
   type: 'button',

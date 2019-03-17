@@ -1,3 +1,2 @@
-export * from './core/dom'
-export * from './core/fiber'
+export * from './core/diff'
 export * from './core/h'

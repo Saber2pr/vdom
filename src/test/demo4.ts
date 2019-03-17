@@ -1,9 +1,10 @@
-import { render } from '../core/dom'
+import { render } from '../core/diff'
 import { html } from '../core/h'
 
 const Home = html`
   <div>
     <p>home</p>
+    <div>hello</div>
     <a href="#project">project</a>
   </div>
 `

@@ -1,4 +1,4 @@
-import { render } from '../core/dom'
+import { render } from '../core/diff'
 import { h } from '../core/h'
 
 const Tab = (select: 'first' | 'second') => (

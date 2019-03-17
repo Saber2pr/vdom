@@ -1,4 +1,4 @@
-import { render } from '../core/dom'
+import { render } from '../core/diff'
 import { html } from '../core/h'
 
 const p = (color: 'red' | 'green') => html`
