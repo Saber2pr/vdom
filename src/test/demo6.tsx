@@ -1,5 +1,5 @@
 import { h } from '../core/h'
-import { render } from '../core/diff'
+import { render } from '../core/dom'
 
 interface Div {
   name

@@ -1,20 +1,20 @@
-import { render } from '../core/diff'
-import { html } from '../core/h'
+import { h } from '../core/h'
+import { render } from '../core/dom'
 
-const Home = html`
+const Home = (
   <div>
     <p>home</p>
-    <div>hello</div>
+    <p>hello</p>
     <a href="#project">project</a>
   </div>
-`
+)
 
-const Project = html`
+const Project = (
   <div>
     <p>Project</p>
     <a href="#home">home</a>
   </div>
-`
+)
 
 window.onhashchange = e => {
   const res = e.newURL.split('#')

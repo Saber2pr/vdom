@@ -1,5 +1,5 @@
-import { render } from '../core/diff'
 import { h } from '../core/h'
+import { render } from '../core/dom'
 
 const Tab = (select: 'first' | 'second') => (
   <div>
@@ -7,7 +7,16 @@ const Tab = (select: 'first' | 'second') => (
       <button onclick={() => update('first')}>first</button>
       <button onclick={() => update('second')}>second</button>
     </div>
-    <div>{select === 'first' ? '1. this is first.' : '2. this is second.'}</div>
+    <div>
+      {select === 'first' ? (
+        <div>
+          1. this is first.
+          <div>child</div>
+        </div>
+      ) : (
+        <div>2. this is second.</div>
+      )}
+    </div>
   </div>
 )
 

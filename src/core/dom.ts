@@ -1,6 +1,6 @@
 import { Fiber } from './fiber'
 import { objset } from './utils/objset'
-import { isTextFiber } from './h'
+import { createRenderer } from './diff'
 
 export interface Element<K extends keyof HTMLElementTagNameMap = any> {
   type?: K
@@ -26,10 +26,13 @@ export function toElement(fiber: Fiber<Element>) {
 
 export const patch = (element: HTMLElement) => (fiber: Fiber<Element>) => {
   const { props } = fiber.instance
-  props && objset(element, props, 'style')
-  props.style && objset(element.style, props.style)
+  props && objset(element, props)
+  props && props.style && objset(element.style, props.style)
   return element
 }
+
+export const isTextFiber = (fiber: Fiber<any>) =>
+  typeof fiber.instance === 'number' || typeof fiber.instance === 'string'
 
 export const patchText = (element: HTMLElement) => (
   textFiber: Fiber<Element>
@@ -43,13 +46,26 @@ export const patchText = (element: HTMLElement) => (
   }
 }
 
-export const updateProps = (
+export const update = (
   fiber: Fiber<Element>,
-  sourceFiber: Fiber<Element>
+  sourceFiber: Fiber<Element> = fiber.alternate
 ) => {
-  objset(fiber.instance.props, sourceFiber.instance.props)
+  if (isTextFiber(fiber) && isTextFiber(sourceFiber)) {
+    fiber.instance === sourceFiber.instance ||
+      (fiber.instance = sourceFiber.instance)
+    patchText(fiber.origin)(fiber)
+  } else {
+    objset(fiber.instance.props, sourceFiber.instance.props)
+    patch(fiber.origin)(fiber)
+  }
 }
 
-export const removeDOM = (fiber: Fiber<Element>) => {
-  ;(fiber.parent.origin as HTMLElement).removeChild(fiber.origin)
+export const remove = (fiber: Fiber<Element>) => {
+  ;(fiber.origin as HTMLElement).remove()
 }
+
+export const render = createRenderer({
+  update,
+  remove,
+  toElement
+})

@@ -1,5 +1,5 @@
-import { render } from '../core/diff'
 import { h } from '../core/h'
+import { render } from '../core/dom'
 
 const View = (num: number) => (
   <div>

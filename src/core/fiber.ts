@@ -10,12 +10,16 @@ export interface Component {
   children?: this[]
 }
 
+type Statu = 'update' | 'delete'
+
 export interface IFiber<T extends Component = Component> {
   instance: T
   parent: IFiber<T>
   child: IFiber<T>
   sibling: IFiber<T>
   origin: any
+  statu: Statu
+  alternate: IFiber<T>
 }
 
 export class Fiber<T extends Component = Component> implements IFiber<T> {
@@ -24,6 +28,8 @@ export class Fiber<T extends Component = Component> implements IFiber<T> {
   public child: Fiber<T>
   public sibling: Fiber<T>
   public origin: any
+  public statu: Statu
+  public alternate: Fiber<T>
   set = <K extends keyof IFiber<T>>(key: K) => (value: this[K]) => {
     this[key] = value
     return this
@@ -61,4 +67,9 @@ export const walk = <T extends Component>(fiber: Fiber<T>) => {
     }
   }
   return current.parent.sibling
+}
+
+export const delet = (fiber: Fiber) => {
+  fiber.instance = fiber.sibling.instance
+  fiber.sibling = fiber.sibling.sibling
 }

@@ -1,5 +1,4 @@
-import { render } from '../core/diff'
-import { Element } from '../core/dom'
+import { Element, render } from '../core/dom'
 
 const first: Element<'button'> = {
   type: 'button',
@@ -10,8 +9,7 @@ const first: Element<'button'> = {
         second.props.style.color === 'red' ? 'green' : 'red'
       update()
     },
-    innerHTML: 'click',
-    id: '02'
+    innerHTML: 'click'
   }
 }
 
@@ -19,7 +17,6 @@ const second: Element<'p'> = {
   type: 'p',
   props: {
     innerHTML: '0',
-    id: '04',
     // @ts-ignore
     style: {}
   }
@@ -27,17 +24,11 @@ const second: Element<'p'> = {
 
 const first_2: Element<'div'> = {
   type: 'div',
-  props: {
-    id: '03'
-  },
   children: [second]
 }
 
 const Root: Element<'div'> = {
   type: 'div',
-  props: {
-    id: '01'
-  },
   children: [first, first_2]
 }
 

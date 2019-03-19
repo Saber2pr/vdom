@@ -5,10 +5,6 @@
  * @Last Modified time: 2019-03-17 09:58:46
  */
 import htm from 'htm'
-import { Fiber } from './fiber'
-
-export const isTextFiber = (fiber: Fiber<any>) =>
-  typeof fiber.instance === 'number' || typeof fiber.instance === 'string'
 
 export function h(type, props, ...children) {
   if (typeof type === 'function') {
