@@ -1,2 +1,1 @@
-export * from './core/diff'
-export * from './core/h'
+export * from './core/vdom'

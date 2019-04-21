@@ -2,7 +2,17 @@
 
 [![npm](https://img.shields.io/npm/v/saber-vdom.svg?color=blue)](https://www.npmjs.com/package/saber-vdom)
 
-> a fast vdom renderer for javascript.
+> 越写越乱啊啊啊（
+
+用栈去遍历节点树就不能持久化保存 dom 引用，遍历完栈也空了。。
+
+还得用 fiber 结构。。。
+
+我想得是每新 render 一次就是传入 commit，
+
+commit 和 master 进行 diff，master 是真实 dom 的代理，diff 的结果(effect)包装为一个函数存到一个 effectList，
+
+等全部节点遍历完后，执行 effectList 里的任务
 
 ```bash
 # from npm
@@ -10,89 +20,6 @@ npm install saber-vdom
 
 # from github
 git clone https://github.com/Saber2pr/saber-vdom.git
-```
-
-## API
-
-```js
-svdom.html`<div></div>`
-
-svdom.render(element, container)
-```
-
-### like this
-
-```js
-var p = svdom.html`
-<div>
-  <p>hello</p>
-  <p>world</p>
-</div>`
-
-svdom.render(p, document.getElementById('root'))
-```
-
-#### if a counter
-
-```js
-var counter = num => svdom.html`
-<div>
-  <p>count:</p>
-  <p>${num}</p>
-  <button onclick=${() => update(num + 1)}>click</button>
-</div>`
-
-var update = num => svdom.render(counter(num), document.getElementById('root'))
-
-update(0)
-```
-
-#### if a counter(use functional)
-
-```js
-var Count = ({ num }) => svdom.html`<span>${num}</span>`
-
-var Div = num => svdom.html`
-<div>
-  hello
-  <${Count} num={${num}}/>
-  <button onclick=${() => update(num + 1)}>click</button>
-  <p >footer</p>
-</div>
-`
-
-var update = num => svdom.render(Div(num), document.getElementById('root'))
-update(0)
-```
-
-## For typescript-tsx
-
-```tsx
-import { h } from 'saber-vdom'
-import { render } from 'saber-vdom'
-
-interface Div {
-  name: string
-  children?: any[]
-}
-
-const Div = ({ name, children }: Div) => (
-  <div>
-    <p>{name}</p>
-    {children}
-  </div>
-)
-
-const View = () => (
-  <div>
-    <Div name="test">
-      <p>child0</p>
-      <p>child1</p>
-    </Div>
-  </div>
-)
-
-render(View(), document.getElementById('root'))
 ```
 
 1. ensure tsconfig

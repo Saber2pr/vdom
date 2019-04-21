@@ -31,7 +31,5 @@
     "typescript": "^3.2.1",
     "uglify-js": "^3.4.9"
   },
-  "dependencies": {
-    "htm": "^2.1.1"
-  }
+  "dependencies": {}
 }

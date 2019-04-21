@@ -1,70 +1,94 @@
 /*
  * @Author: saber2pr
- * @Date: 2019-04-21 10:22:10
- * @Last Modified by: saber2pr
- * @Last Modified time: 2019-04-21 11:43:14
+ * @Date: 2019-04-21 15:07:22
+ * @Last Modified by:   saber2pr
+ * @Last Modified time: 2019-04-21 15:07:22
  */
-export interface Node {
-  parent?: this
+export interface Fiber {
+  parent: this
+  child: this
+  sibling: this
+}
+
+export interface VDom extends Fiber {
+  type: string
+  props?: Object
   children?: this[]
+  ref?: HTMLElement
+  effects?: Function[]
 }
 
-export class Progress<T extends Node> {
-  constructor(private stack: T[], private effects: Function[] = []) {}
-  public next() {
-    const currentNode = this.get()
-    currentNode.children &&
-      currentNode.children.forEach(child => {
-        child.parent = currentNode
-        this.stack.push(child)
-      })
-    return currentNode
-  }
-  public done() {
-    return this.stack.length === 0
-  }
-
-  public set(node: T) {
-    this.stack.push(node)
-    return this
-  }
-
-  public get() {
-    return this.stack.pop()
-  }
-
-  public getEffect(effect: Function[]) {
-    this.effects.push(...effect)
-    return this
-  }
-  public resolveEffects() {
-    this.effects.forEach(e => e())
-    return this
-  }
+export const link = (vdom: VDom) => {
+  vdom.child = vdom.children.reduceRight(
+    (sibling, child) => {
+      child.sibling = sibling
+      child.parent = vdom
+      return child
+    },
+    null as VDom
+  )
 }
 
-export interface VDom extends Node {
-  type: any
-  props: any
-  children?: this[]
-  ref: HTMLElement
+export const next = (vdom: VDom) => {
+  vdom.child || link(vdom)
+  let current = vdom
+  if (current.child) {
+    return current.child
+  }
+  if (current.sibling) {
+    return current.sibling
+  }
+  if (!current.parent) {
+    return current
+  }
+  while (!current.parent.sibling) {
+    current = current.parent
+    if (!current.parent) {
+      return null
+    }
+  }
+  return current.parent.sibling
 }
 
-export function h(type: string | Function, props: Object, ...children: VDom[]) {
-  if (typeof type === 'function') {
-    return type({
-      ...props,
-      children: [].concat(children)
-    })
+let __root: VDom
+
+export function render(root: VDom, container: HTMLElement) {
+  if (!__root) {
+    root.parent = { ref: container } as VDom
+    __root = root
+    renderDomTree(__root)
   } else {
-    return { type, props, children: [].concat(children) }
+    process(__root, root)
+    commit(__root)
+  }
+}
+
+export function renderDomTree(root: VDom) {
+  let current = root
+  while (current) {
+    renderDom(current)
+    current = next(current)
+  }
+}
+
+export function renderDom(vdom: VDom) {
+  if (vdom.ref) {
+    return
+  } else {
+    const dom: any = document.createElement(vdom.type)
+    if (vdom.props) {
+      Object.keys(vdom.props).forEach(k => (dom[k] = vdom.props[k]))
+      bind(vdom.props, dom)
+    }
+    vdom.ref = dom
+    vdom.parent.ref.appendChild(dom)
   }
 }
 
 export const bind = <T extends Object>(
   target: T,
-  model: HTMLElement,
-  map?: Object
+  model: { [k: string]: any },
+  map?: { [k: string]: any }
 ) =>
   Object.keys(map || target).forEach(key =>
     Object.defineProperty(target, key, {
@@ -79,85 +103,61 @@ export const bind = <T extends Object>(
     })
   )
 
-let __masterProgress: Progress<VDom> = null
-
-export function render(root: VDom, dom: HTMLElement) {
-  if (__masterProgress) {
-    __masterProgress = new Progress([root])
-    renderDomTree(__masterProgress, dom)
+export function process(masterVDom: VDom, commitVDom: VDom) {
+  let curMasterVDom = masterVDom
+  let curCommitVDom = commitVDom
+  while (curMasterVDom && curCommitVDom) {
+    getEffects(curMasterVDom, curCommitVDom)
+    curMasterVDom = next(curMasterVDom)
+    curCommitVDom = next(curCommitVDom)
   }
-  process(__masterProgress, new Progress([root]))
+
+  while (curMasterVDom) {
+    curMasterVDom = next(curMasterVDom)
+    curMasterVDom.effects.push(removeEffect(curMasterVDom))
+  }
+
+  while (curCommitVDom) {
+    curCommitVDom = next(curCommitVDom)
+  }
 }
 
-export function process(
-  masterProgress: Progress<VDom>,
-  commitProgress: Progress<VDom>
-) {
-  while (!masterProgress.done() && !commitProgress.done()) {
-    const masterCurrentNode = masterProgress.next()
-    const commitCurrentNode = commitProgress.next()
-    commit(masterProgress, masterCurrentNode, commitCurrentNode)
+export function removeEffect(vdom: VDom) {
+  return () => {
+    vdom.parent.ref.removeChild(vdom.ref)
   }
-
-  while (!masterProgress.done()) {
-    masterProgress.get()
-  }
-
-  while (!commitProgress.done()) {
-    masterProgress.set(commitProgress.next())
-  }
-
-  masterProgress.resolveEffects()
 }
 
-export function commit(
-  masterProgress: Progress<VDom>,
-  masterVDom: VDom,
-  commitVDom: VDom
-) {
-  masterProgress.getEffect(diffProps(masterVDom, commitVDom))
+export function getEffects(masterVDom: VDom, commitVDom: VDom) {
+  masterVDom.effects || (masterVDom.effects = [])
+  masterVDom.effects.push(...diffProps(masterVDom, commitVDom))
 }
 
 export function diffProps(masterVDom: VDom, commitVDom: VDom) {
-  return Object.keys(masterVDom).reduce(
-    (out, key) => {
-      if (masterVDom[key] === commitVDom[key]) {
-        return
-      }
-      return out.concat(() => masterVDom[key] === commitVDom[key])
-    },
+  return Object.keys(masterVDom.props || {}).reduce(
+    (out, key) =>
+      masterVDom.props[key] === commitVDom.props[key]
+        ? out
+        : out.concat(() => (masterVDom.ref[key] = commitVDom.props[key])),
     [] as Function[]
   )
 }
 
-export function renderDom(vdom: VDom) {
-  if (vdom.ref) {
-    return
+export function h(type: string | Function, props: Object, ...children: VDom[]) {
+  if (typeof type === 'function') {
+    return type({
+      ...props,
+      children: [...children]
+    })
   } else {
-    const dom: HTMLElement = document.createElement(vdom.type)
-    Object.keys(vdom.props).forEach(k => (dom[k] = vdom.props[k]))
-    vdom.parent && vdom.parent.ref.appendChild(dom)
-    bind(vdom.props, dom)
+    return { type, props, children: [...children] }
   }
 }
 
-export function renderDomTree(
-  masterProgress: Progress<VDom>,
-  container: HTMLElement
-) {
-  let current = masterProgress.next()
-  current.parent = { ref: container } as VDom
-  while (!masterProgress.done()) {
-    renderDom(current)
-    current = masterProgress.next()
+export function commit(root: VDom) {
+  let current = root
+  while (current) {
+    current.effects.forEach(e => e())
+    current = next(current)
   }
 }
-
-// export function remove(masterVDom: VDom) {}
-
-// export function diffType(masterVDom: VDom, commitVDom: VDom) {
-//   if (masterVDom.type === commitVDom.type) {
-//     return
-//   }
-//   masterVDom
-// }
