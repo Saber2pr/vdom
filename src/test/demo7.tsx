@@ -3,12 +3,13 @@ import { render, h } from '../core/vdom'
 const App = ({ state }) => (
   <div>
     <div>
-      <p
-        innerHTML={state}
+      <p innerHTML={state} />
+      <button
         onclick={() => {
-          setState('hehe')
+          setState(state + 1)
           console.log('click')
         }}
+        innerHTML="update"
       />
     </div>
   </div>
@@ -16,4 +17,4 @@ const App = ({ state }) => (
 
 const setState = state =>
   render(<App state={state} />, document.getElementById('root'))
-setState('hello')
+setState(0)

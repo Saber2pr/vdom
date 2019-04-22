@@ -1,8 +1,8 @@
 /*
  * @Author: saber2pr
  * @Date: 2019-04-21 15:07:22
- * @Last Modified by:   saber2pr
- * @Last Modified time: 2019-04-21 15:07:22
+ * @Last Modified by: saber2pr
+ * @Last Modified time: 2019-04-22 21:31:14
  */
 export interface Fiber {
   parent: this
@@ -76,32 +76,11 @@ export function renderDom(vdom: VDom) {
     return
   } else {
     const dom: any = document.createElement(vdom.type)
-    if (vdom.props) {
-      Object.keys(vdom.props).forEach(k => (dom[k] = vdom.props[k]))
-      bind(vdom.props, dom)
-    }
+    vdom.props && Object.keys(vdom.props).forEach(k => (dom[k] = vdom.props[k]))
     vdom.ref = dom
     vdom.parent.ref.appendChild(dom)
   }
 }
-
-export const bind = <T extends Object>(
-  target: T,
-  model: { [k: string]: any },
-  map?: { [k: string]: any }
-) =>
-  Object.keys(map || target).forEach(key =>
-    Object.defineProperty(target, key, {
-      set(value) {
-        const mkey = map ? map[key] : key
-        model[mkey] = value
-      },
-      get() {
-        const mkey = map ? map[key] : key
-        return model[mkey]
-      }
-    })
-  )
 
 export function process(masterVDom: VDom, commitVDom: VDom) {
   let curMasterVDom = masterVDom
